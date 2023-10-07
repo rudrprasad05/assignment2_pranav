@@ -11,22 +11,11 @@ using namespace std;
 
 void discard_line(ifstream& in);
 bool check_white_space(string input1);
-void print_success_failure(string type, List& myList);
+void print_success_list(List& myList);
+void print_failure_list(List& myList);
 void remove_success_failure(List& myList);
 void read_file(ifstream& in, List& myList);
-void print_header(){
-    cout << setw(8) << "Type" << setw(5) << " | "
-        << setw(8) << "Invoice" << setw(3) << " | "
-        << setw(8) << "Surname" << setw(5) << " | "
-        << setw(8) << "Name" << setw(5) << " | "
-        << setw(5) << "Contact" << setw(5) << " | "
-        << setw(3) << "status" << setw(4) << " | "
-        << setw(12) << "result" << " | " << endl;
-    for(int i = 0; i < 85; i++){
-        cout << "-";
-    }
-    cout << endl;
-}
+void print_header();
 
 int main()
 {
@@ -63,12 +52,14 @@ int main()
 
     cout << "\n\n";
 
-    if (option == 1)
+    if (option == 1){
+        print_header();
         myList.printList();
+    }
     else if (option == 2)
-        print_success_failure("success", myList);
+        print_success_list(myList);
     else if (option == 3)
-        print_success_failure("failure", myList);
+        print_failure_list(myList);
     else if (option == 4)
         remove_success_failure(myList);
     else
@@ -116,11 +107,12 @@ void remove_success_failure(List& myList) {
             }
         }
     }
+    print_header();
     myList.printList();
 
 }
 
-void print_success_failure(string type, List& myList) {
+void print_success_list(List& myList) {
 
     Node* pHead = myList.getpHead();
     Node* pNode = pHead;
@@ -134,7 +126,30 @@ void print_success_failure(string type, List& myList) {
             VisaApplication* v = dynamic_cast<VisaApplication*>(d);
 
 
-            if (v->result == type) {
+            if (v->result == "success") {
+                v->print();
+            }
+            else {
+                continue;
+            }
+        }
+    }
+}
+
+void print_failure_list(List& myList){
+    Node* pHead = myList.getpHead();
+    Node* pNode = pHead;
+    if (myList.isEmpty())
+        cout << "The list is empty\n";
+    else{
+        print_header();
+        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+
+            Data* d = pNode->getData();
+            VisaApplication* v = dynamic_cast<VisaApplication*>(d);
+
+
+            if (v->result == "failure") {
                 v->print();
             }
             else {
@@ -183,4 +198,16 @@ bool check_white_space(string input1) {
     else return false;
 }
 
-
+void print_header(){
+    cout << setw(8) << "Type" << setw(5) << " | "
+        << setw(8) << "Invoice" << setw(3) << " | "
+        << setw(8) << "Surname" << setw(5) << " | "
+        << setw(8) << "Name" << setw(5) << " | "
+        << setw(5) << "Contact" << setw(5) << " | "
+        << setw(3) << "status" << setw(4) << " | "
+        << setw(12) << "result" << " | " << endl;
+    for(int i = 0; i < 85; i++){
+        cout << "-";
+    }
+    cout << endl;
+}
