@@ -14,6 +14,19 @@ bool check_white_space(string input1);
 void print_success_failure(string type, List& myList);
 void remove_success_failure(List& myList);
 void read_file(ifstream& in, List& myList);
+void print_header(){
+    cout << setw(8) << "Type" << setw(5) << " | "
+        << setw(8) << "Invoice" << setw(3) << " | "
+        << setw(8) << "Surname" << setw(5) << " | "
+        << setw(8) << "Name" << setw(5) << " | "
+        << setw(5) << "Contact" << setw(5) << " | "
+        << setw(3) << "status" << setw(4) << " | "
+        << setw(12) << "result" << " | " << endl;
+    for(int i = 0; i < 85; i++){
+        cout << "-";
+    }
+    cout << endl;
+}
 
 int main()
 {
@@ -24,11 +37,13 @@ int main()
 
     List myList;
 
-
     in.open("applications.txt", ios::in);
     // out.open("applications_outcome.txt", ios::out);
 
     read_file(in, myList);
+
+    in.close();
+
 
     cout << "Welcome to Visa Application App" << endl;
     cout << "Choose an option from the menu below" << endl
@@ -46,6 +61,8 @@ int main()
         cin >> option;
     }
 
+    cout << "\n\n";
+
     if (option == 1)
         myList.printList();
     else if (option == 2)
@@ -57,7 +74,9 @@ int main()
     else
         cout << "Error! Invalid Input" << endl;
 
-    in.close();
+    cout << "\n\n";
+    
+
     // out.close();
 
 }
@@ -107,7 +126,8 @@ void print_success_failure(string type, List& myList) {
     Node* pNode = pHead;
     if (myList.isEmpty())
         cout << "The list is empty\n";
-    else
+    else{
+        print_header();
         for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
@@ -121,6 +141,7 @@ void print_success_failure(string type, List& myList) {
                 continue;
             }
         }
+    }
 }
 
 void read_file(ifstream& in, List& myList) {

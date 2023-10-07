@@ -19,12 +19,12 @@ public:
 
     void print()
     {
-        cout << setw(8) << this->visa_type << setw(5) << " | "
-            << setw(3) << this->invoice_no << setw(3) << " | "
+        cout << setw(9) << this->visa_type << setw(4) << " | "
+            << setw(8) << this->invoice_no << setw(3) << " | "
             << setw(8) << this->surname << setw(5) << " | "
             << setw(8) << this->first_name << setw(5) << " | "
             << setw(5) << this->contact << setw(5) << " | "
-            << setw(3) << this->status << setw(5) << " | "
+            << setw(5) << this->status << setw(5) << " | "
             << setw(12) << this->result << " | " << endl;
     }
 
