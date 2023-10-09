@@ -15,7 +15,7 @@ void print_success_list(List& myList);
 void print_failure_list(List& myList);
 void remove_success_failure(List& myList);
 void read_file(ifstream& in, List& myList);
-void print_header();
+void print_header(string props);
 
 int main()
 {
@@ -50,10 +50,9 @@ int main()
         cin >> option;
     }
 
-    cout << "\n\n";
 
     if (option == 1){
-        print_header();
+        print_header("Full List");
         myList.printList();
     }
     else if (option == 2)
@@ -66,6 +65,7 @@ int main()
         cout << "Error! Invalid Input" << endl;
 
     cout << "\n\n";
+    cout << "Closing Programme..." << endl;
     
 
     // out.close();
@@ -107,7 +107,7 @@ void remove_success_failure(List& myList) {
             }
         }
     }
-    print_header();
+    print_header("No Decision");
     myList.printList();
 
 }
@@ -119,7 +119,7 @@ void print_success_list(List& myList) {
     if (myList.isEmpty())
         cout << "The list is empty\n";
     else{
-        print_header();
+        print_header("Successful Applicants List");
         for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
@@ -142,7 +142,7 @@ void print_failure_list(List& myList){
     if (myList.isEmpty())
         cout << "The list is empty\n";
     else{
-        print_header();
+        print_header("Failed Applicants List");
         for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
@@ -198,7 +198,8 @@ bool check_white_space(string input1) {
     else return false;
 }
 
-void print_header(){
+void print_header(string props){
+    cout << "\n\n Printing... " << props << "\n\n\n";
     cout << setw(8) << "Type" << setw(5) << " | "
         << setw(8) << "Invoice" << setw(3) << " | "
         << setw(8) << "Surname" << setw(5) << " | "
