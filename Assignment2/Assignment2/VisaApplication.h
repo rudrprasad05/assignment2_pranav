@@ -9,7 +9,6 @@ class VisaApplication : public Data {
 
 public:
 
-
     string visa_type;
     string invoice_no;
     string surname;
