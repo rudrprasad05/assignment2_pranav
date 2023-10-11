@@ -95,7 +95,7 @@ void remove_success_failure(List& myList) {
 
             Data* d = pNode->getData();
 
-            VisaApplication* v = dynamic_cast<VisaApplication*>(d);
+            VisaApplication *v = (VisaApplication*)d;
 
             if (v->result == "success" || v->result == "failure") {
                 myList.removeNode(pNode);
@@ -123,7 +123,7 @@ void print_success_list(List& myList) {
         for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
-            VisaApplication* v = dynamic_cast<VisaApplication*>(d);
+            VisaApplication *v = (VisaApplication*)d;
 
 
             if (v->result == "success") {
@@ -146,7 +146,7 @@ void print_failure_list(List& myList){
         for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
-            VisaApplication* v = dynamic_cast<VisaApplication*>(d);
+            VisaApplication *v = (VisaApplication*)d;
 
 
             if (v->result == "failure") {
