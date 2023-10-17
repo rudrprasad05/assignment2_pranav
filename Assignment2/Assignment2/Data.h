@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <ostream>
 using namespace std;
 
 class Data
