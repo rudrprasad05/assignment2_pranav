@@ -1,0 +1,17 @@
+visa_type invoice_no surname first_name contact status result
+tourist 1001 singh john 3387711 WCR NODecision
+tourist 1002 ratu seru 6689941 NP NODecision
+student 3009 loren junior 9466789 C success
+student 3003 sam ronny 3398878 C failure
+student 3008 hussain ali 3389902 IP NODecision
+business 4002 king adam 9457789 C failure
+business 4007 king Tony 8214439 C success
+tourist 1003 singh john 3387711 WCR NODecision
+     
+     
+
+
+
+
+
+
