@@ -43,11 +43,11 @@ int main()
         << "4. Print Pending Applicants" << endl
         << "5. Quit" << endl << endl;
 
-    cout << "Enter a number [ 1 - 4 ]: ";
+    cout << "Enter a number [ 1 - 5 ]: ";
     cin >> option;
 
     // validate option variable 
-    while (cin.fail() || option < 1 || option > 4) {
+    while (cin.fail() || option < 1 || option > 5) {
         cin.clear();
         cin.ignore(1000, '\n');
         cout << "Invalid option selected: ";
