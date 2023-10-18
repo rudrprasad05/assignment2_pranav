@@ -4,8 +4,6 @@
 #include <fstream>
 #include "List.h"
 #include "VisaApplication.h"
-#include "Node.h"
-#include "Data.h"
 
 using namespace std;
 
@@ -19,9 +17,12 @@ void print_header(string props);
 
 int main()
 {
+    // Variable to store the user's menu option
     int option;
 
+    // input file
     ifstream in;
+    // output file
     ofstream out;
 
     List myList;
@@ -58,16 +59,21 @@ int main()
     
     if (option == 1){
         print_header("Full List");
+        // print full list of applicants stored in linked list
         myList.printList();
     }
     else if (option == 2)
+        // print only applicants who were successful
         print_success_list(myList);
+
     else if (option == 3)
+        // print only applicants who were unsuccessful
         print_failure_list(myList);
+
     else if (option == 4)
+        // remove unsuccessful and failed applicants. print list
         remove_success_failure(myList);
 
-    // error validation if option is invalid
     else cout << "Error! Invalid Input" << endl;
 
     cout << "\n\n";
@@ -92,11 +98,13 @@ void remove_success_failure(List& myList) {
     if (myList.isEmpty())
         cout << "The list is empty\n";
     else {
+        // point to head of list
         Node* pHead = myList.getpHead();
         Node* pNode = pHead;
-        Node* temp = pNode; // temp node that will hold value of deleted node. used to access next node
+        // temp node that will hold value of deleted node. used to access next node
+        Node* temp = pNode; 
 
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
 
@@ -126,7 +134,7 @@ void print_success_list(List& myList) {
         cout << "The list is empty\n";
     else{
         print_header("Successful Applicants List");
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
@@ -135,9 +143,7 @@ void print_success_list(List& myList) {
             if (v->getResult() == "success") {
                 v->print();
             }
-            else {
-                continue;
-            }
+            
         }
     }
 }
@@ -149,7 +155,7 @@ void print_failure_list(List& myList){
         cout << "The list is empty\n";
     else{
         print_header("Failed Applicants List");
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
@@ -158,24 +164,26 @@ void print_failure_list(List& myList){
             if (v->getResult() == "failure") {
                 v->print();
             }
-            else {
-                continue;
-            }
+            
         }
     }
 }
 
 void read_file(ifstream& in, List& myList) {
 
+    // temporary string  to hold data read from the file.
     string temp_string;
 
+    // check if errors encounted
     if (in.fail()) {
         cout << "invalid file or pathname" << endl;
         return;
     }
 
+    // discard unwanted lines
     discard_line(in);
 
+    // loop through until end of file reached
     while (!in.eof()) {
 
         VisaApplication* visaRecords = new VisaApplication;
@@ -202,12 +210,15 @@ void read_file(ifstream& in, List& myList) {
         in >> temp_string;
         visaRecords->setResult(temp_string);
 
+        // Check if last item is empty, showing that end of file reached.
         if (temp_string == "") {
             break;
         }
-       
+
+        // append to linked list
         myList.appendNode(visaRecords);
 
+        // reset temp string to empty
         temp_string = "";
     }
 
@@ -232,11 +243,11 @@ void write_file(ofstream& out, List& myList){
     out << "Visa Application Out File" << endl;
 
     if (myList.isEmpty())
-        cout << "The list is empty\n";
+        out << "The list is empty\n";
     else{
         // print full list
         out << "\n--==[ Full List ]==--\n" << endl;
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
 
@@ -246,7 +257,7 @@ void write_file(ofstream& out, List& myList){
 
         // print only Successful Applicants
         out << "\n--==[ Successful Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
 
@@ -257,7 +268,7 @@ void write_file(ofstream& out, List& myList){
 
         // print only Failed Applicants
         out << "\n--==[ Failed Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
 
@@ -268,7 +279,7 @@ void write_file(ofstream& out, List& myList){
 
         // print only Pending Applicants
         out << "\n--==[ Pending Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != NULL; pNode = myList.nextNode(pNode)) {
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
             Data* d = pNode->getData();
             VisaApplication *v = (VisaApplication*)d;
 
