@@ -2,23 +2,31 @@
 #include <stdlib.h>
 #include <string>
 #include <fstream>
+#include <ostream>
+
 #include "List.h"
 #include "VisaApplication.h"
 
 using namespace std;
 
 void discard_line(ifstream& in);
-void print_success_list(List& myList);
-void print_failure_list(List& myList);
-void remove_success_failure(List& myList);
+
+void print_success_list(List& myList, ofstream &out);
+void print_failure_list(List& myList, ofstream &out);
+void remove_success_failure(List& myList, ofstream &out);
+void deleteList(List &myList);
+
 void read_file(ifstream& in, List& myList);
-void write_file(ofstream& out, List& myList);
-void print_header(string props);
+void writeFile(ofstream& out, List& myList);
+void print_header(string props, ostream& outputType);
+
 
 int main()
 {
     // Variable to store the user's menu option
     int option;
+    bool running = true;
+
     // input file
     ifstream in;
     // output file
@@ -26,64 +34,67 @@ int main()
 
     List myList;
 
-    in.open("applications.txt", ios::in);
-    out.open("applications_outcome.txt", ios::out);
-
     // read data from file "applications.txt"
-    read_file(in, myList);
-    // write data to "applications_outcome.txt"
-    write_file(out, myList);
-
     // show menu options
     cout << "\n <--==[ Welcome to Visa Application App ]==-->" << endl;
-    cout << "\nChoose an option from the menu below" << endl
-        << "1. Print All Applicants" << endl
-        << "2. Print Successful Applicants" << endl
-        << "3. Print Failed Applicants" << endl
-        << "4. Print Pending Applicants" << endl
-        << "5. Quit" << endl << endl;
 
-    cout << "Enter a number [ 1 - 5 ]: ";
-    cin >> option;
 
-    // validate option variable 
-    while (cin.fail() || option < 1 || option > 5) {
-        cin.clear();
-        cin.ignore(1000, '\n');
-        cout << "Invalid option selected: ";
+    while(running){
+        cout << "\nChoose an option from the menu below" << endl
+            << "1. Print All Applicants" << endl
+            << "2. Print Successful Applicants" << endl
+            << "3. Print Failed Applicants" << endl
+            << "4. Print Pending Applicants" << endl
+            << "5. Write to File" << endl
+            << "6. Quit";
+
+        
+        read_file(in, myList); 
+        cout << "\n\nEnter a number [ 1 - 6 ]: ";
         cin >> option;
+
+        // validate option variable 
+        while (cin.fail() || option < 1 || option > 6) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid option selected: ";
+            cin >> option;
+        }
+
+        if (option == 1) {
+            print_header("Full List", cout);
+            // print full list of applicants stored in linked list
+            myList.printList();
+        }
+        else if (option == 2)
+            // print only applicants who were successful
+            print_success_list(myList, out);
+
+        else if (option == 3)
+            // print only applicants who were unsuccessful
+            print_failure_list(myList, out);
+
+        else if (option == 4) {
+            // remove unsuccessful and failed applicants. print list
+            remove_success_failure(myList, out);
+            
+        }
+        else if ( option == 5){
+            writeFile(out, myList);
+        }
+            
+        else if (option == 6) {
+            cout << "Closing Programme..." << endl;
+            running = false;
+            break;
+        }
+
+        else cout << "Error! Invalid Input" << endl;
+        deleteList(myList);
+
+
     }
-
-    if (option == 1) {
-        print_header("Full List");
-        // print full list of applicants stored in linked list
-        myList.printList();
-    }
-    else if (option == 2)
-        // print only applicants who were successful
-        print_success_list(myList);
-
-    else if (option == 3)
-        // print only applicants who were unsuccessful
-        print_failure_list(myList);
-
-    else if (option == 4) 
-        // remove unsuccessful and failed applicants. print list
-        remove_success_failure(myList);
-           
-    else if (option == 5) {
-        cout << "Closing Programme..." << endl;
-        return 0;
-    }
-
-    else cout << "Error! Invalid Input" << endl;
-
-    cout << "\n\n";
-    cout << "Closing Programme..." << endl;
-
-    in.close();
-    out.close();
-
+  
     system("pause");
     return 0;
 }
@@ -99,7 +110,7 @@ void discard_line(ifstream& in)
 }
 
 // function to remove successful and failed applicants
-void remove_success_failure(List& myList) {
+void remove_success_failure(List& myList, ofstream &out) {
 
     // check if list is empty
     if (myList.isEmpty())
@@ -124,23 +135,23 @@ void remove_success_failure(List& myList) {
                 pNode = temp;
 
             }
-            
         }
     }
-    print_header("No Decision");
+    print_header("No Decision", cout);
     myList.printList();
 
 }
 
 // function to print successful applicants to console 
-void print_success_list(List& myList) {
+void print_success_list(List& myList, ofstream &out) {
 
     Node* pHead = myList.getpHead();
     Node* pNode = pHead;
     if (myList.isEmpty())
         cout << "The list is empty\n";
     else{
-        print_header("Successful Applicants List");
+        print_header("Successful Applicants List", cout);
+
         for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
@@ -148,20 +159,25 @@ void print_success_list(List& myList) {
 
             // if visa applicant result is successful then only print
             if (v->getResult() == "success") {
+                // print to console
                 v->print();
+                // write same data to file
+                v->writeFile(out);
             }
-            
         }
     }
+
 }
 
-void print_failure_list(List& myList){
+void print_failure_list(List& myList, ofstream &out){
+
     Node* pHead = myList.getpHead();
     Node* pNode = pHead;
     if (myList.isEmpty())
         cout << "The list is empty\n";
     else{
-        print_header("Failed Applicants List");
+        print_header("Failed Applicants List", cout);
+
         for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
 
             Data* d = pNode->getData();
@@ -169,17 +185,28 @@ void print_failure_list(List& myList){
 
             // if visa applicant result is failed then only print
             if (v->getResult() == "failure") {
+                // print to console
                 v->print();
+                // write same data to file
+                v->writeFile(out);
             }
             
         }
     }
+
 }
 
 void read_file(ifstream& in, List& myList) {
+    in.open("applications.txt", ios::in);
 
     // temporary string  to hold data read from the file.
-    string temp_string;
+    string visa_type,
+        invoice_no,
+        surname,
+        first_name,
+        contact,
+        status,
+        result;
 
     // check if errors encounted
     if (in.fail()) {
@@ -191,115 +218,51 @@ void read_file(ifstream& in, List& myList) {
     discard_line(in);
 
     // loop through until end of file reached
-    while (!in.eof()) {
+    while (in >> visa_type) {
 
-        VisaApplication* visaRecords = new VisaApplication;
+        in >> invoice_no;
+        in >> surname;
+        in >> first_name;
+        in >> contact;
+        in >> status;
+        in >> result;
 
-        
-        in >> temp_string;
-        visaRecords->setVisaType(temp_string);
-
-        in >> temp_string;
-        visaRecords->setInvoiceNumber(temp_string);
-
-        in >> temp_string;
-        visaRecords->setSurname(temp_string);
-
-        in >> temp_string;
-        visaRecords->setFirstName(temp_string);
-
-        in >> temp_string;
-        visaRecords->setContact(temp_string);
-
-        in >> temp_string;
-        visaRecords->setStatus(temp_string);
-
-        in >> temp_string;
-        visaRecords->setResult(temp_string);
-
-        // Check if last item is empty, showing that end of file reached.
-        if (temp_string == "") {
-            break;
-        }
+        VisaApplication* visaRecords = new VisaApplication(visa_type, invoice_no, surname, first_name, contact, status, result);
 
         // append to linked list
         myList.appendNode(visaRecords);
-
-        // reset temp string to empty
-        temp_string = "";
     }
+    in.close();
+
+}
+void writeFile(ofstream& out, List& myList){
+    out.open("applications_outcome.txt", ios::out);
+
+    Node* pHead = myList.getpHead();
+    Node* pNode = pHead;
+    if (myList.isEmpty())
+        cout << "The list is empty\n";
+    else{
+        print_header("Visa Applicants List", out);
+
+        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
+
+            Data* d = pNode->getData();
+            VisaApplication *v = (VisaApplication*)d;
+
+            v->writeFile(out);
+        }
+
+        cout << "File written" << endl;
+    }
+    out.close();
 
 }
 
 // function that is used as a template to print data onto the output file 
-void write_file_template(ofstream& out, VisaApplication *visaRecords){
-    out << setw(9) << visaRecords->getVisaType() << setw(4) << " | "
-        << setw(8) << visaRecords->getInvoiceNumber() << setw(3) << " | "
-        << setw(8) << visaRecords->getSurname() << setw(5) << " | "
-        << setw(8) << visaRecords->getFirstName() << setw(5) << " | "
-        << setw(5) << visaRecords->getContact() << setw(5) << " | "
-        << setw(5) << visaRecords->getStatus() << setw(5) << " | "
-        << setw(12) << visaRecords->getResult()  << " | " << endl ;
-}
-
-// function to print all data to the ouput file. 
-void write_file(ofstream& out, List& myList){
-    Node* pHead = myList.getpHead();
-    Node* pNode = pHead;
-
-    out << "Visa Application Out File" << endl;
-
-    if (myList.isEmpty())
-        out << "The list is empty\n";
-    else{
-        // print full list
-        out << "\n--==[ Full List ]==--\n" << endl;
-        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
-            Data* d = pNode->getData();
-            VisaApplication *v = (VisaApplication*)d;
-
-            write_file_template(out, v);
-            
-        }
-
-        // print only Successful Applicants
-        out << "\n--==[ Successful Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
-            Data* d = pNode->getData();
-            VisaApplication *v = (VisaApplication*)d;
-
-            if (v->getResult() == "success") {
-                write_file_template(out, v);
-            }
-        }
-
-        // print only Failed Applicants
-        out << "\n--==[ Failed Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
-            Data* d = pNode->getData();
-            VisaApplication *v = (VisaApplication*)d;
-
-            if (v->getResult() == "failure") {
-                write_file_template(out, v);
-            }
-        }
-
-        // print only Pending Applicants
-        out << "\n--==[ Pending Applicants ]==--\n" << endl;
-        for (pNode = pHead; pNode != nullptr; pNode = myList.nextNode(pNode)) {
-            Data* d = pNode->getData();
-            VisaApplication *v = (VisaApplication*)d;
-
-            if (v->getResult() == "failure") {
-                write_file_template(out, v);
-            }
-        }
-    }
-}
-
-void print_header(string props){
-    cout << "\n\n Printing... " << props << "\n\n\n";
-    cout << setw(8) << "Type" << setw(5) << " | "
+void print_header(string props, ostream& outputType){
+    outputType << "\n\n Printing... " << props << "\n\n\n";
+    outputType << setw(8) << "Type" << setw(5) << " | "
         << setw(8) << "Invoice" << setw(3) << " | "
         << setw(8) << "Surname" << setw(5) << " | "
         << setw(8) << "Name" << setw(5) << " | "
@@ -307,9 +270,14 @@ void print_header(string props){
         << setw(3) << "status" << setw(4) << " | "
         << setw(12) << "result" << " | " << endl;
     for(int i = 0; i < 85; i++){
-        cout << "-";
+        outputType << "-";
     }
-    cout << endl;
+    outputType << endl;
 }
 
-
+void deleteList(List &myList){
+    while (!myList.isEmpty())   //keep on removing until the
+        //head points to NULL
+        myList.removeNode(myList.getpHead());
+    cout << "List deleted\n";
+}
